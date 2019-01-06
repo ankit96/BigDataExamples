@@ -43,4 +43,4 @@ if __name__ == '__main__':
     fb_common_friends.run()
 
 
-#python fb_common_friends.py facebook_example.txt
+#python fb_common_friends.py ../resources/facebook_example.txt

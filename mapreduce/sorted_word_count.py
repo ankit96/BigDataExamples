@@ -36,4 +36,4 @@ if __name__ == '__main__':
     sorted_word_count.run()
 
 
-#python sorted_word_count.py example_text.txt
+#python sorted_word_count.py ../resources/example_text.txt

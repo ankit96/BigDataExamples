@@ -26,4 +26,4 @@ if __name__ == '__main__':
     word_count.run()
 
 
-# command : python word_count.py example_text.txt
+# command : python word_count.py ../resources/example_text.txt

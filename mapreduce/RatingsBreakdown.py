@@ -23,3 +23,6 @@ class RatingsBreakdown(MRJob):
 
 if __name__ == '__main__':
     RatingsBreakdown.run()
+
+
+#python RatingsBreakdown.py ../resources/u.data
