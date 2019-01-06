@@ -6,15 +6,15 @@ class sorted_word_count(MRJob):
     def steps(self):
         return [
             MRStep(mapper=self.word_mapper,
-		   combiner = self.word_combiner,
+		          combiner = self.word_combiner,
                    reducer=self.word_reducer),
- 	    MRStep(reducer=self.final_reducer)#optional for sorting
+            MRStep(reducer=self.final_reducer)#optional for sorting
         ]
 
     def word_mapper(self, _, line):
         words = line.split(' ')
-	for word in words:
-	    if len(word)>0:
+    	for word in words:
+    	    if len(word)>0:
                 yield word, 1
 
     def word_combiner(self, word, counts):
@@ -25,9 +25,8 @@ class sorted_word_count(MRJob):
 
 
     def final_reducer(self, count,words):
-	
-	words_sorted = sorted(list(words),reverse=True)
-	word_list='\t'.join(str(word) for word in words_sorted)
+        words_sorted = sorted(list(words),reverse=True)
+        word_list='\t'.join(str(word) for word in words_sorted)
         print count,str(word_list)
 	
 
