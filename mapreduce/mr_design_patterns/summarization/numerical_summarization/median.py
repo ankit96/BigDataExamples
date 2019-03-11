@@ -54,8 +54,7 @@ class median(MRJob):
             if  csum >= median_index  and old_csum<median_index2:
                 result_set.append(data[0])
 
-            old_csum = csum
-            prev_key = city_day[1]  
+            old_csum = csum 
         #print(result_set)  
         print(city_day[0],self.convert_epoch(city_day[1]),sum(result_set)/(1.0*len(result_set)))
         
