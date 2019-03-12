@@ -7,7 +7,7 @@ class counters(MRJob):
     
     
     def __init__(self, *args, **kwargs):
-        super(inverted_lookup, self).__init__(*args, **kwargs)
+        super(counters, self).__init__(*args, **kwargs)
        
     #defining steps 
     def steps(self):    
