@@ -1,0 +1,137 @@
+
+from mrjob.job import MRJob
+from mrjob.step import MRStep
+import json
+
+from jsonparser import extract_values
+
+
+from starbase import Connection
+
+
+
+
+class word_mr(MRJob):
+    
+    
+    def __init__(self, *args, **kwargs):
+        super(word_mr, self).__init__(*args, **kwargs)
+      
+    def get_batch(self):
+        c = Connection()
+        words = c.table('words')
+        batch = words.batch()
+        return batch  
+       
+    #defining steps 
+    def steps(self):    
+        return [
+            MRStep(mapper_init=self.mapper_init
+                    ,mapper=self.mapper
+                    ,mapper_final=self.mapper_final
+                
+                  )
+
+        ]
+
+    def mapper_init(self):
+        self.batch = self.get_batch()
+
+
+    #MapReduce Phase 1 : convert temperature data into city,day,temp,temp_count
+    def mapper(self, _, line):
+        #yield None,str(line)
+        parsed = json.loads(line)
+
+        word =str(parsed['results'][0]['word'].encode('utf-8', 'ignore')).strip()
+        examples = extract_values(parsed,'examples')
+        definitions = extract_values(parsed,'definitions')
+        
+        for key,val in enumerate(examples):
+            self.batch.update(str(word),{'examples':{key:val}})
+    
+    def mapper_final(self):
+        try:
+            self.batch.commit(finalize = True)
+        except AssertionError as error:
+            pass
+  
+        
+
+if __name__ == '__main__':
+    word_mr.run()
+
+
+# command : python counters.py -r hadoop --hadoop-streaming-jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar city_temperature.txt
+
+
+Running main function :
+from word_mr import word_mr
+import os
+
+
+def getjsonfilelist():
+	path ='/home/ankit/projects/grewords/project/boxjsonfiles/'
+	data = os.listdir(path)
+	existingdata = []
+	for file in data:
+		existingdata.append(path+file)
+	return existingdata
+
+
+
+mr_job = word_mr()
+with mr_job.make_runner() as runner:
+	runner._input_paths = getjsonfilelist()
+	runner.run()
+	# for key, value in mr_job.parse_output(runner.cat_output()):
+	# 	print(key,value)
+
+
+
+-- hbase reading : 
+
+from starbase import Connection
+
+
+c = Connection()
+words = c.table('words')
+
+print(words.columns())
+print(words.fetch(b'abate')))
+
+
+
+
+cli commands : 
+General commands
+Status : shows the status of the cluster.
+Version
+Whoami : gives current user
+
+DDL
+alter 't1', NAME => 'f1', VERSIONS => 5 
+ to change or add the ‘f1’ column family in table ‘t1’ from the current value to keep a maximum of 5 cell VERSIONS
+alter 'ns1:t1', NAME => 'f1', METHOD => 'delete' 
+delete the ‘f1’ column family in table
+Create table :
+create ‘<table name>’,’<column family>’
+create 't1', {NAME => 'f1'}, {NAME => 'f2'}, {NAME => 'f3'}
+disable 't1' the tables which are disabled, will not be deleted from HBase, only they are not available for regular access.
+Drop 'ns1:t1'
+exists 'ns1:t1'
+list 'abc.*'
+
+DML commands 
+append 't1', 'r1', 'c1', 'value', ATTRIBUTES=>{'mykey'=>'myvalue'} 
+“append” command appends a cell ‘value’ at specified table/row/column coordinates.
+count 'ns1:t1' : count no.  of rows
+delete 'ns1:t1', 'r1', 'c1', ts1 : puts a delete cell value at specified table/row/column and optionally timestamp coordinates.
+Get : get a row or cell contents; pass the table name, row, and optionally a dictionary of column(s), timestamp, timerange, and versions. 
+get 't1', 'r1', {COLUMN => ['c1', 'c2', 'c3']}
+get 't1', 'r1', {COLUMN => 'c1', TIMESTAMP => ts1, VERSIONS => 4}
+incr 'ns1:t1', 'r1', 'c1'
+put 'ns1:t1', 'r1', 'c1', 'value'
+Truncate : disables, drops and recreates the specified table. 
+
+
