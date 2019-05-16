@@ -134,4 +134,6 @@ incr 'ns1:t1', 'r1', 'c1'
 put 'ns1:t1', 'r1', 'c1', 'value'
 Truncate : disables, drops and recreates the specified table. 
 
+No joins in hbase thus need to do join operations in mapreduce ,spark etc other tech
+
 

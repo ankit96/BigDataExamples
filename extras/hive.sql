@@ -118,4 +118,5 @@ Transactional Tables: Hive supports single-table transactions. Tables must be ma
 CREATE TRANSACTIONAL TABLE
 
 
+sort by uses multiple reducerss but order by uses single reducer
 
